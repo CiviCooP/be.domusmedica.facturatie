@@ -36,6 +36,7 @@ function facturatie_civicrm_install() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
  */
 function facturatie_civicrm_postInstall() {
+  CRM_Facturatie_CustomData::postInstall();
   _facturatie_civix_civicrm_postInstall();
 }
 
