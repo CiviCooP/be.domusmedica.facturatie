@@ -4,6 +4,25 @@ require_once 'facturatie.civix.php';
 use CRM_Facturatie_ExtensionUtil as E;
 
 /**
+ * Implements hook_civicrm_buildForm();
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_buildForm/
+ */
+function xchangewinbooks_civicrm_buildForm($formName, &$form) {
+  $contribution = new CRM_Facturatie_Contribution();
+  $contribution->buildForm($formName, $form);
+}
+
+/**
+ * Implements hook_civicrm_post().
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_post/
+ */
+function facturatie_civicrm_post($op, $objectName, $objectId, &$objectRef) {
+  $contribution = new CRM_Facturatie_Contribution();
+  $contribution->post($op, $objectName, $objectId, $objectRef);
+}
+/**
  * Implements hook_civicrm_config().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
@@ -36,7 +55,6 @@ function facturatie_civicrm_install() {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
  */
 function facturatie_civicrm_postInstall() {
-  CRM_Facturatie_CustomData::postInstall();
   _facturatie_civix_civicrm_postInstall();
 }
 

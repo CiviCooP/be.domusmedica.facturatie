@@ -121,6 +121,34 @@ class CRM_Facturatie_CustomData {
   }
 
   /**
+   * Getter for creditdatum custom field
+   *
+   * @param $key
+   * @return array|mixed
+   */
+  public function getCreditdatum($key) {
+    if (!empty($key) && isset($this->_creditDatumCustomField[$key])) {
+      return $this->_creditDatumCustomField[$key];
+    } else {
+      return $this->_creditDatumCustomField;
+    }
+  }
+
+  /**
+   * Getter for factuurdatum custom field
+   *
+   * @param $key
+   * @return array|mixed
+   */
+  public function getFactuurdatum($key) {
+    if (!empty($key) && isset($this->_factuurDatumCustomField[$key])) {
+      return $this->_factuurDatumCustomField[$key];
+    } else {
+      return $this->_factuurDatumCustomField;
+    }
+  }
+
+  /**
    * Method to create the domus_contribution_data custom group
    */
   public function createContributionData() {
@@ -167,7 +195,7 @@ class CRM_Facturatie_CustomData {
     try {
       $factuurDatumParams = array(
         'custom_group_id' => $this->_contributionDataCustomGroup['id'],
-        'name' => 'domus_factuurdatum',
+        'name' => 'dm_factuurdatum',
       );
       $count = civicrm_api3('CustomField', 'getcount', $factuurDatumParams);
       switch ($count) {
@@ -187,7 +215,7 @@ class CRM_Facturatie_CustomData {
           return TRUE;
           break;
         default:
-          CRM_Core_Error::createError(ts('Could not find one single custom field with name domus_factuurdatum in custom group domus_contribution_data, contact your system administrator. (extension be.domusmedica.facturatie)'));
+          CRM_Core_Error::createError(ts('Could not find one single custom field with name dm_factuurdatum in custom group domus_contribution_data, contact your system administrator. (extension be.domusmedica.facturatie)'));
           break;
       }
     }
@@ -206,7 +234,7 @@ class CRM_Facturatie_CustomData {
     try {
       $creditDatumParams = array(
         'custom_group_id' => $this->_contributionDataCustomGroup['id'],
-        'name' => 'domus_creditdatum',
+        'name' => 'dm_creditdatum',
       );
       $count = civicrm_api3('CustomField', 'getcount', $creditDatumParams);
       switch ($count) {
@@ -226,7 +254,7 @@ class CRM_Facturatie_CustomData {
           return TRUE;
           break;
         default:
-          CRM_Core_Error::createError(ts('Could not find one single custom field with name domus_creditdatum in custom group domus_contribution_data, contact your system administrator. (extension be.domusmedica.facturatie)'));
+          CRM_Core_Error::createError(ts('Could not find one single custom field with name dm_creditdatum in custom group domus_contribution_data, contact your system administrator. (extension be.domusmedica.facturatie)'));
           break;
       }
     }
@@ -243,8 +271,8 @@ class CRM_Facturatie_CustomData {
     try {
       $created = civicrm_api3('CustomField', 'create', array(
         'custom_group_id' => $this->_contributionDataCustomGroup['id'],
-        'name' => 'domus_factuurdatum',
-        'column_name' => 'domus_factuurdatum',
+        'name' => 'dm_factuurdatum',
+        'column_name' => 'dm_factuurdatum',
         'label' => 'Factuurdatum',
         'data_type' => 'Date',
         'html_type' => 'Select Date',
@@ -254,11 +282,13 @@ class CRM_Facturatie_CustomData {
         'is_view' => 1,
         'start_date_years' => 1,
         'end_date_years' => 1,
+        'date_format' => 'dd-mm-yy',
+        'weight' => -20,
       ));
       $this->_factuurDatumCustomField = $created['values'][$created['id']];
     }
     catch (CiviCRM_API3_Exception $ex) {
-      CRM_Core_Error::createError(ts('Could not create custom field domus_factuurdatum in custom group domus_contribution_data, contact your system administrator. (extension be.domusmedica.facturatie, error from API CustomField create: '.$ex->getMessage()));
+      CRM_Core_Error::createError(ts('Could not create custom field dm_factuurdatum in custom group domus_contribution_data, contact your system administrator. (extension be.domusmedica.facturatie, error from API CustomField create: '.$ex->getMessage()));
     }
   }
 
@@ -269,8 +299,8 @@ class CRM_Facturatie_CustomData {
     try {
       $created = civicrm_api3('CustomField', 'create', array(
         'custom_group_id' => $this->_contributionDataCustomGroup['id'],
-        'name' => 'domus_creditdatum',
-        'column_name' => 'domus_creditdatum',
+        'name' => 'dm_creditdatum',
+        'column_name' => 'dm_creditdatum',
         'label' => 'Creditnota datum',
         'data_type' => 'Date',
         'html_type' => 'Select Date',
@@ -280,11 +310,13 @@ class CRM_Facturatie_CustomData {
         'is_view' => 1,
         'start_date_years' => 1,
         'end_date_years' => 1,
+        'date_format' => 'dd-mm-yy',
+        'weight' => -10,
       ));
       $this->_creditDatumCustomField = $created['values'][$created['id']];
     }
     catch (CiviCRM_API3_Exception $ex) {
-      CRM_Core_Error::createError(ts('Could not create custom field domus_creditdatum in custom group domus_contribution_data, contact your system administrator. (extension be.domusmedica.facturatie, error from API CustomField create: '.$ex->getMessage()));
+      CRM_Core_Error::createError(ts('Could not create custom field dm_creditdatum in custom group domus_contribution_data, contact your system administrator. (extension be.domusmedica.facturatie, error from API CustomField create: '.$ex->getMessage()));
     }
   }
 
