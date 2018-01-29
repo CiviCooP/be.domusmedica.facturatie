@@ -109,8 +109,16 @@ class CRM_Facturatie_Contribution {
             $query = 'INSERT INTO '.$customData->getContributionData('table_name').' ('.
               $customData->getCreditdatum('column_name').', entity_id) VALUES(%1, %2)';
           } else {
-            $query = 'UPDATE ' . $customData->getContributionData('table_name') . ' SET ' .
-              $customData->getCreditdatum('column_name') . ' = %1 WHERE entity_id = %2';
+            // update if still empty
+            $currentQuery = 'SELECT '.$customData->getCreditdatum('column_name').' FROM '
+              .$customData->getContributionData('table_name').' WHERE entity_id = %1';
+            $currentDate = CRM_Core_DAO::singleValueQuery($currentQuery, array(
+              1 => array($contributionId, 'Integer'),
+            ));
+            if (empty($currentDate)) {
+              $query = 'UPDATE ' . $customData->getContributionData('table_name') . ' SET ' .
+                $customData->getCreditdatum('column_name') . ' = %1 WHERE entity_id = %2';
+            }
           }
           break;
         case 'factuur':
@@ -118,20 +126,30 @@ class CRM_Facturatie_Contribution {
             $query = 'INSERT INTO '.$customData->getContributionData('table_name').' ('.
               $customData->getFactuurdatum('column_name').', entity_id) VALUES(%1, %2)';
           } else {
-            $query = 'UPDATE ' . $customData->getContributionData('table_name') . ' SET ' .
-              $customData->getFactuurdatum('column_name') . ' = %1 WHERE entity_id = %2';
+            // update if still empty
+            $currentQuery = 'SELECT '.$customData->getFactuurdatum('column_name').' FROM '
+              .$customData->getContributionData('table_name').' WHERE entity_id = %1';
+            $currentDate = CRM_Core_DAO::singleValueQuery($currentQuery, array(
+              1 => array($contributionId, 'Integer'),
+            ));
+            if (empty($currentDate)) {
+              $query = 'UPDATE ' . $customData->getContributionData('table_name') . ' SET ' .
+                $customData->getFactuurdatum('column_name') . ' = %1 WHERE entity_id = %2';
+            }
           }
           break;
         default:
           return;
           break;
       }
-      $saveDate = new DateTime();
-      $queryParms = array(
-        1 => array($saveDate->format('Ymd'), 'String'),
-        2 => array($contributionId, 'Integer'),
-      );
-      CRM_Core_DAO::executeQuery($query, $queryParms);
+      if ($query) {
+        $saveDate = new DateTime();
+        $queryParms = array(
+          1 => array($saveDate->format('Ymd'), 'String'),
+          2 => array($contributionId, 'Integer'),
+        );
+        CRM_Core_DAO::executeQuery($query, $queryParms);
+      }
     }
   }
 
